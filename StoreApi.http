@@ -1,35 +1,41 @@
-@StoreApi_HostAddress = http://localhost:5063
+### ভ্যারিয়েবল ডিক্লেয়ারেশন (আপনার লোকাল পোর্ট মিলিয়ে নিন)
+@baseUrl = http://localhost:5063
 
-GET {{StoreApi_HostAddress}}/weatherforecast/
-Accept: application/json
 
-### ১. নতুন প্রোডাক্ট তৈরি করুন (POST)
-POST {{StoreApi_HostAddress}}/api/products
+### ১. ইউজার রেজিস্ট্রেশন (যদি ইউজার আগে তৈরি করা না থাকে)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "hasan",
+  "password": "Password123!",
+  "role": "Admin"
+}
+
+
+### ২. লগইন রিকোয়েস্ট (রেসপন্স ক্যাপচার করার জন্য # @name ব্যবহার করা হয়েছে)
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "hasan",
+  "password": "Password123!"
+}
+
+
+### ৩. টোকেন ভ্যারিয়েবল সেট করা (লগইন রেসপন্সের বডি থেকে token ফিল্ডটি নিয়ে নেবে)
+@authToken = {{login.response.body.token}}
+
+
+### ৪. সুরক্ষিত (Protected) এন্ডপয়েন্টে টোকেন সহ রিকোয়েস্ট
+POST {{baseUrl}}/api/products
+Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
   "name": "Mechanical Keyboard",
-  "category": "Accessories",
-  "price": 4500.00,
-  "stock": 15
+  "category": "Electronics",
+  "price": 3500.00,
+  "stock": 20
 }
-
-### ২. সব প্রোডাক্ট দেখুন (GET)
-GET {{StoreApi_HostAddress}}/api/products
-Accept: application/json
-
-### ৩. প্রোডাক্ট আপডেট করুন (PUT)
-PUT {{StoreApi_HostAddress}}/api/products/1
-Content-Type: application/json
-
-{
-  "name": "RGB Mechanical Keyboard",
-  "category": "Gaming Accessories",
-  "price": 4200.00,
-  "stock": 12
-}
-
-### ৪. প্রোডাক্ট ডিলিট করুন (DELETE)
-DELETE {{StoreApi_HostAddress}}/api/products/1
-
-###

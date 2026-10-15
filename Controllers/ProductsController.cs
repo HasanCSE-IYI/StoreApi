@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StoreApi.Data;
 using StoreApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace StoreApi.Controllers;
 
@@ -22,6 +23,7 @@ public class ProductsController(AppDbContext context) : ControllerBase
         return product is null ? NotFound(new { message = "Product not found!" }) : product;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Product>> CreateProduct(ProductCreateDto dto)
     {
@@ -39,6 +41,7 @@ public class ProductsController(AppDbContext context) : ControllerBase
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
     }
 
+    [Authorize]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id, ProductUpdateDto dto)
     {
@@ -54,6 +57,7 @@ public class ProductsController(AppDbContext context) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
