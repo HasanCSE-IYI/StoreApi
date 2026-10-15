@@ -58,16 +58,19 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseDefaultFiles(); // wwwroot/index.html কে ডিফল্ট পেজ বানাবে
+app.UseStaticFiles();
+
 // ⚠️ খুব জরুরি: UseAuthentication অবশ্যই UseAuthorization-এর ঠিক ওপরে থাকতে হবে
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapGet("/", () => new { 
-    message = "Welcome to Store API!", 
-    docs = "/scalar/v1", 
-    endpoints = "/api/products" 
-});
+// app.MapGet("/", () => new { 
+//     message = "Welcome to Store API!", 
+//     docs = "/scalar/v1", 
+//     endpoints = "/api/products" 
+// });
 
 app.MapControllers();
 
