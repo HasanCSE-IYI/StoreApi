@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using StoreApi.Services;
+using StoreApi.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // TokenService ইনজেকশন
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 // JWT Authentication কনফিগারেশন
 builder.Services.AddAuthentication(options =>

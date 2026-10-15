@@ -18,4 +18,8 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.18.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Watch Remove="wwwroot/uploads/**;*.db;*.db-shm;*.db-wal" />
+  </ItemGroup>
+
 </Project>

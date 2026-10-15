@@ -15,6 +15,8 @@ public class ProductCreateDto
 
     [Range(0, 10000, ErrorMessage = "Stock cannot be negative.")]
     public int Stock { get; set; }
+
+    public string? ImageUrl { get; set; }
 }
 
 public class ProductUpdateDto : ProductCreateDto { }
