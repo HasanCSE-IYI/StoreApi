@@ -9,14 +9,12 @@ namespace StoreApi.Controllers;
 [Route("api/[controller]")]
 public class ProductsController(AppDbContext context) : ControllerBase
 {
-    // ১. সব প্রোডাক্টের লিস্ট দেখা: GET /api/products
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
     {
         return await context.Products.AsNoTracking().ToListAsync();
     }
 
-    // ২. নির্দিষ্ট ID দিয়ে একটি প্রোডাক্ট দেখা: GET /api/products/1
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Product>> GetProduct(int id)
     {
@@ -24,38 +22,43 @@ public class ProductsController(AppDbContext context) : ControllerBase
         return product is null ? NotFound(new { message = "Product not found!" }) : product;
     }
 
-    // ৩. নতুন প্রোডাক্ট যুক্ত করা: POST /api/products
     [HttpPost]
-    public async Task<ActionResult<Product>> CreateProduct(Product product)
+    public async Task<ActionResult<Product>> CreateProduct(ProductCreateDto dto)
     {
+        var product = new Product
+        {
+            Name = dto.Name,
+            Category = dto.Category,
+            Price = dto.Price,
+            Stock = dto.Stock
+        };
+
         context.Products.Add(product);
         await context.SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
     }
 
-    // ৪. প্রোডাক্ট আপডেট করা: PUT /api/products/1
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateProduct(int id, Product updatedProduct)
+    public async Task<IActionResult> UpdateProduct(int id, ProductUpdateDto dto)
     {
         var product = await context.Products.FindAsync(id);
-        if (product is null) return NotFound();
+        if (product is null) return NotFound(new { message = "Product not found!" });
 
-        product.Name = updatedProduct.Name;
-        product.Category = updatedProduct.Category;
-        product.Price = updatedProduct.Price;
-        product.Stock = updatedProduct.Stock;
+        product.Name = dto.Name;
+        product.Category = dto.Category;
+        product.Price = dto.Price;
+        product.Stock = dto.Stock;
 
         await context.SaveChangesAsync();
         return NoContent();
     }
 
-    // ৫. প্রোডাক্ট ডিলিট করা: DELETE /api/products/1
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
         var product = await context.Products.FindAsync(id);
-        if (product is null) return NotFound();
+        if (product is null) return NotFound(new { message = "Product not found!" });
 
         context.Products.Remove(product);
         await context.SaveChangesAsync();
