@@ -108,10 +108,28 @@
         <h3 class="text-lg font-semibold text-sky-400 border-b border-slate-700 pb-2">Edit Product</h3>
         <input type="hidden" id="editId">
         <div class="space-y-3">
-          <input id="editName" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
-          <input id="editCategory" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
-          <input id="editPrice" type="number" step="0.01" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
-          <input id="editStock" type="number" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Product Name *</label>
+            <input id="editName" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Category</label>
+            <input id="editCategory" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Price *</label>
+              <input id="editPrice" type="number" step="0.01" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
+            </div>
+            <div>
+              <label class="text-xs text-slate-400 block mb-1">Stock *</label>
+              <input id="editStock" type="number" class="w-full bg-slate-900 border border-slate-700 p-2 rounded text-sm">
+            </div>
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Change Image (optional)</label>
+            <input id="editImageFile" type="file" accept="image/*" class="w-full bg-slate-900 border border-slate-700 p-1.5 rounded text-xs file:bg-slate-800 file:border-0 file:text-sky-400 file:rounded file:px-2 file:py-1">
+          </div>
         </div>
         <div class="flex justify-end gap-2 pt-2">
           <button onclick="closeEditModal()" class="px-4 py-1.5 bg-slate-700 rounded text-sm">Cancel</button>
@@ -293,6 +311,7 @@
       document.getElementById('editCategory').value = product.category || '';
       document.getElementById('editPrice').value = product.price;
       document.getElementById('editStock').value = product.stock;
+      document.getElementById('editImageFile').value = '';
       document.getElementById('editModal').classList.remove('hidden');
     }
 
@@ -306,6 +325,32 @@
       const category = document.getElementById('editCategory').value.trim();
       const price = parseFloat(document.getElementById('editPrice').value);
       const stock = parseInt(document.getElementById('editStock').value);
+      const editImageFile = document.getElementById('editImageFile').files[0];
+
+      if (!name || isNaN(price) || isNaN(stock)) return alert('Name, Price and Stock are required!');
+
+      let imageUrl = null;
+      if (editImageFile) {
+        const formData = new FormData();
+        formData.append('file', editImageFile);
+
+        const uploadRes = await fetch('/api/products/upload-image', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+
+        if (uploadRes.ok) {
+          const imgData = await uploadRes.json();
+          imageUrl = imgData.imageUrl;
+        } else {
+          const err = await uploadRes.json().catch(() => ({}));
+          return alert(err.message || 'Image upload failed.');
+        }
+      }
+
+      const payload = { name, category, price, stock };
+      if (imageUrl) payload.imageUrl = imageUrl;
 
       const res = await fetch(`/api/products/${id}`, {
         method: 'PUT',
@@ -313,12 +358,15 @@
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({ name, category, price, stock })
+        body: JSON.stringify(payload)
       });
 
       if (res.ok) {
         closeEditModal();
         loadProducts(currentPage);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || 'Failed to update product.');
       }
     }
 

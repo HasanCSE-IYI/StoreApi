@@ -22,11 +22,14 @@ public class AuthController(AppDbContext context, ITokenService tokenService) : 
         // BCrypt দিয়ে পাসওয়ার্ড হ্যাশ করা
         var passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
+        // রোল যাচাই (Admin অথবা User, অন্যথায় ডিফল্ট User)
+        var role = dto.Role.Equals("Admin", StringComparison.OrdinalIgnoreCase) ? "Admin" : "User";
+
         var user = new User
         {
             Username = dto.Username,
             PasswordHash = passwordHash,
-            Role = dto.Role
+            Role = role
         };
 
         context.Users.Add(user);

@@ -44,6 +44,11 @@ public class ProductsController(IProductRepository repository, IWebHostEnvironme
         if (file is null || file.Length == 0)
             return BadRequest(new { message = "No file uploaded." });
 
+        // সাইজ লিমিট: ২ মেগাবাইট (2 * 1024 * 1024 bytes)
+        const long maxFileSize = 2 * 1024 * 1024;
+        if (file.Length > maxFileSize)
+            return BadRequest(new { message = "File size exceeds 2MB limit." });
+
         var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
         var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 

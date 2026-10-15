@@ -93,19 +93,27 @@ Make sure you have the following installed:
    
    ```
 
-   *The API will start at `http://localhost:5123` or `https://localhost:7123`.*
+   *The API will start at `http://localhost:5063` or `https://localhost:7237`.*
 
 ## 📡 API Endpoints Reference
 
-Base URL: `http://localhost:5123/api`
+Base URL: `http://localhost:5063/api`
 
-| Method | Endpoint | Description | Request Body / Params | 
-| ----- | ----- | ----- | ----- | 
-| **GET** | `/products` | Retrieve all products | None | 
-| **GET** | `/products/{id}` | Retrieve a specific product by ID | Path Parameter (`id`) | 
-| **POST** | `/products` | Create a new product | JSON Object | 
-| **PUT** | `/products/{id}` | Update an existing product | Path ID & JSON Object | 
-| **DELETE** | `/products/{id}` | Delete a product by ID | Path Parameter (`id`) | 
+### Authentication Endpoints
+| Method | Endpoint | Description | Request Body / Params |
+| ----- | ----- | ----- | ----- |
+| **POST** | `/auth/register` | Register a new user (`User` or `Admin`) | JSON (`username`, `password`, `role`) |
+| **POST** | `/auth/login` | Authenticate and get JWT token | JSON (`username`, `password`) |
+
+### Products Endpoints
+| Method | Endpoint | Description | Request Body / Auth |
+| ----- | ----- | ----- | ----- |
+| **GET** | `/products` | Retrieve products (with search & pagination) | Query (`search`, `category`, `page`, `pageSize`) |
+| **GET** | `/products/{id}` | Retrieve a specific product by ID | Path Parameter (`id`) |
+| **POST** | `/products` | Create a new product | JWT Bearer, JSON Object |
+| **POST** | `/products/upload-image` | Upload product image (Max 2MB) | JWT Bearer, `multipart/form-data` |
+| **PUT** | `/products/{id}` | Update an existing product | JWT Bearer, Path ID & JSON Object |
+| **DELETE** | `/products/{id}` | Delete a product (Admin only) | JWT Bearer (`Admin`), Path ID | 
 
 ### Example JSON Payload (POST / PUT):
 

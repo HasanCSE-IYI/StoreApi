@@ -3,7 +3,7 @@ using System.Text.Json;
 
 namespace StoreApi.Middlewares;
 
-public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
+public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger, IHostEnvironment env)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -14,12 +14,18 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
         catch (Exception ex)
         {
             logger.LogError(ex, "An unhandled exception occurred: {Message}", ex.Message);
-            await HandleExceptionAsync(context, ex);
+            await HandleExceptionAsync(context, ex, env.IsDevelopment());
         }
     }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private Task HandleExceptionAsync(HttpContext context, Exception exception, bool isDevelopment)
     {
+        if (context.Response.HasStarted)
+        {
+            logger.LogWarning("The response has already started, cannot write error response.");
+            return Task.CompletedTask;
+        }
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
@@ -27,7 +33,7 @@ public class GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExcep
         {
             status = context.Response.StatusCode,
             message = "An internal server error occurred. Please try again later.",
-            detailed = exception.Message // প্রোডাকশনে এটি বন্ধ রাখা ভালো
+            detailed = isDevelopment ? exception.Message : null // শুধুমাত্র ডেভেলপমেন্টে ডিটেইল দেখাবে
         };
 
         var json = JsonSerializer.Serialize(response);
