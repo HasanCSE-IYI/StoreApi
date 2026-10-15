@@ -1,6 +1,35 @@
 @StoreApi_HostAddress = http://localhost:5063
 
-GET {{StoreApi_HostAddress}}/weatherforecast/
+# GET {{StoreApi_HostAddress}}/weatherforecast/
+# Accept: application/json
+
+### ১. নতুন প্রোডাক্ট তৈরি করুন (POST)
+POST {{StoreApi_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Mechanical Keyboard",
+  "category": "Accessories",
+  "price": 4500.00,
+  "stock": 15
+}
+
+### ২. সব প্রোডাক্ট দেখুন (GET)
+GET {{StoreApi_HostAddress}}/api/products
 Accept: application/json
+
+### ৩. প্রোডাক্ট আপডেট করুন (PUT)
+PUT {{StoreApi_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "RGB Mechanical Keyboard",
+  "category": "Gaming Accessories",
+  "price": 4200.00,
+  "stock": 12
+}
+
+### ৪. প্রোডাক্ট ডিলিট করুন (DELETE)
+DELETE {{StoreApi_HostAddress}}/api/products/1
 
 ###

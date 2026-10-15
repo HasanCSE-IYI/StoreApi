@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "T9OQJVQlXic=",
+  "dgSpecHash": "Ras9T4JP7DE=",
   "success": true,
   "projectFilePath": "/home/bunkai/DotNetProjects/StoreApi/StoreApi.csproj",
   "expectedPackageFiles": [
@@ -26,6 +26,7 @@
     "/home/bunkai/.nuget/packages/microsoft.visualstudio.solutionpersistence/1.0.52/microsoft.visualstudio.solutionpersistence.1.0.52.nupkg.sha512",
     "/home/bunkai/.nuget/packages/mono.texttemplating/3.0.0/mono.texttemplating.3.0.0.nupkg.sha512",
     "/home/bunkai/.nuget/packages/newtonsoft.json/13.0.4/newtonsoft.json.13.0.4.nupkg.sha512",
+    "/home/bunkai/.nuget/packages/scalar.aspnetcore/2.18.0/scalar.aspnetcore.2.18.0.nupkg.sha512",
     "/home/bunkai/.nuget/packages/sqlitepclraw.bundle_e_sqlite3/2.1.13/sqlitepclraw.bundle_e_sqlite3.2.1.13.nupkg.sha512",
     "/home/bunkai/.nuget/packages/sqlitepclraw.core/2.1.13/sqlitepclraw.core.2.1.13.nupkg.sha512",
     "/home/bunkai/.nuget/packages/sqlitepclraw.lib.e_sqlite3/2.1.13/sqlitepclraw.lib.e_sqlite3.2.1.13.nupkg.sha512",
